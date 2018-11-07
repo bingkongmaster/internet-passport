@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">InternetPassport</string>
+    <string name="accessibility_service_description">
+        This application uses \'accessibility service\' feature in Android, to read
+        and access login forms on the web browser.
+    </string>
 </resources>
