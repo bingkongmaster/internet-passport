@@ -1,6 +1,7 @@
 package com.example.administrator.internetpassport;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,9 +26,10 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Catch clause", Toast.LENGTH_LONG).show();
         }
 
-        // This code is written for development ease.
-        Intent i = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivity(i);
+        // AutofillManager afm = getSystemService(AutofillManager.class);
+        Intent i = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
+        i.setData(Uri.parse("package:com.example.administrator.internetpassport"));
+        startActivityForResult(i, 1);
     }
 
     public void test_method() throws SQLException {

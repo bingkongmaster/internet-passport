@@ -1,68 +1,85 @@
 package com.example.administrator.internetpassport;
 
-import android.accessibilityservice.AccessibilityService;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.app.assist.AssistStructure;
+import android.app.assist.AssistStructure.*;
+import android.os.CancellationSignal;
+import android.service.autofill.AutofillService;
+import android.service.autofill.Dataset;
+import android.service.autofill.FillCallback;
+import android.service.autofill.FillContext;
+import android.service.autofill.FillRequest;
+import android.service.autofill.FillResponse;
+import android.service.autofill.SaveCallback;
+import android.service.autofill.SaveRequest;
+import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.autofill.AutofillValue;
+import android.widget.RemoteViews;
 
-public class BrowserObserver extends AccessibilityService {
+import java.util.ArrayList;
+import java.util.List;
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
+/**
+ * reference: https://developer.android.com/guide/topics/text/autofill-services
+ */
+public class BrowserObserver extends AutofillService {
+
+    private static final String TAG = "BrowserObserver";
+
     @Override
-    public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (AccessibilityEvent.eventTypeToString(event.getEventType()).contains("WINDOW")) {
-            AccessibilityNodeInfo nodeInfo = event.getSource();
-            Log.e("IP", AccessibilityEvent.eventTypeToString(event.getEventType()));
-            debugViewHierarchy(nodeInfo, 0);
+    public void onFillRequest(@NonNull FillRequest request,
+                              @NonNull CancellationSignal cancellationSignal,
+                              @NonNull FillCallback callback) {
+        Log.d(TAG, "fillrequest");
+
+        List<FillContext> context = request.getFillContexts();
+        AssistStructure structure = context.get(context.size() - 1).getStructure();
+
+        List<ViewNode> fields = traverseStructure(structure);
+
+        RemoteViews suggestion_view = new RemoteViews(getPackageName(), android.R.layout.simple_list_item_1);
+        suggestion_view.setTextViewText(android.R.id.text1, "my_username");
+
+        if (fields.isEmpty()) return;
+
+        FillResponse res = new FillResponse.Builder()
+                .addDataset(new Dataset.Builder(suggestion_view)
+                        .setValue(fields.get(0).getAutofillId(), AutofillValue.forText("facebook.com"))
+                        .build())
+                .build();
+
+        callback.onSuccess(res);
+    }
+
+    public List<ViewNode> traverseStructure(AssistStructure structure) {
+        List<ViewNode> fields = new ArrayList<>();
+
+        int nodes = structure.getWindowNodeCount();
+
+        for (int i = 0; i < nodes; i++) {
+            WindowNode windowNode = structure.getWindowNodeAt(i);
+            ViewNode viewNode = windowNode.getRootViewNode();
+            traverseNode(viewNode, fields);
+        }
+
+        return fields;
+    }
+
+    public void traverseNode(ViewNode viewNode, List<ViewNode> fields) {
+
+        if (viewNode.getClassName().contains("EditText")) {
+            Log.d(TAG, viewNode.toString());
+            fields.add(viewNode);
+        }
+
+        for (int i = 0; i < viewNode.getChildCount(); i++) {
+            ViewNode childNode = viewNode.getChildAt(i);
+            traverseNode(childNode, fields);
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public void debugViewHierarchy(AccessibilityNodeInfo info, int depth) {
-        if (info == null)
-            return;
-        StringBuilder log = new StringBuilder();
-        for (int i = 0; i < depth; i++)
-            log.append('-');
-
-        Log.d("IP",  log.toString() + info.getClassName() + " " + info.getViewIdResourceName() +
-                " \"" + info.getText() + "\"");
-
-        for (int i = 0; i < info.getChildCount(); i++)
-        {
-            AccessibilityNodeInfo child = info.getChild(i);
-            debugViewHierarchy(child, depth + 1);
-            if (child != null)
-                child.recycle();
-        }
-    }
-
-    /* this code came from: https://stackoverflow.com/a/40100222 */
-
-    public void getUrls(AccessibilityNodeInfo nodeInfo) {
-        if (nodeInfo == null)
-            return;
-        if (nodeInfo.getText() != null && nodeInfo.getText().length() > 0)
-            System.out.println(nodeInfo.getText() + " class: " + nodeInfo.getClassName());
-        for (int i = 0; i < nodeInfo.getChildCount(); i++)
-        {
-            AccessibilityNodeInfo child = nodeInfo.getChild(i);
-            getUrls(child);
-            if (child != null) {
-                child.recycle();
-            }
-        }
-    }
-
     @Override
-    public void onServiceConnected() {
-        Log.d("BrowserObserver", "is bound to system");
-    }
-
-    @Override
-    public void onInterrupt() {
+    public void onSaveRequest(@NonNull SaveRequest request, @NonNull SaveCallback callback) {
 
     }
 }
