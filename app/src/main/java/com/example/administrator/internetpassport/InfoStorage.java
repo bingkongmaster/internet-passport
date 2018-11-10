@@ -8,6 +8,8 @@ public class InfoStorage {
     @DatabaseField(id = true)
     private String id;
     @DatabaseField
+    private String password;
+    @DatabaseField
     private String name;
     @DatabaseField
     private String sex;
@@ -20,8 +22,9 @@ public class InfoStorage {
 
     public InfoStorage() {}
 
-    public InfoStorage(String id, String name, String sex, String nationality, String phone_number, String address) {
+    public InfoStorage(String id, String password, String name, String sex, String nationality, String phone_number, String address) {
         this.id = id;
+        this.password = password;
         this.name = name;
         this.sex = sex;
         this.nationality = nationality;
@@ -31,6 +34,10 @@ public class InfoStorage {
 
     public String getId() {
         return id;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getName() {

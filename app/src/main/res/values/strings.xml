@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">InternetPassport</string>
+    <string name="editText_Id">ID</string>
+    <string name="editText_Password">PASSWORD</string>
+    <string name="button_login">LOG IN</string>
+    <string name="button_createaccount">CREATE ACCOUNT</string>
 </resources>
