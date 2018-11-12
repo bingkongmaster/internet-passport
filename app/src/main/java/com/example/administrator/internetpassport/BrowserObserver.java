@@ -30,28 +30,37 @@ public class BrowserObserver extends AutofillService {
     public void onFillRequest(@NonNull FillRequest request,
                               @NonNull CancellationSignal cancellationSignal,
                               @NonNull FillCallback callback) {
-        Log.d(TAG, "fillrequest");
+        Log.d(TAG, "onFillRequest");
 
         List<FillContext> context = request.getFillContexts();
         AssistStructure structure = context.get(context.size() - 1).getStructure();
 
-        List<ViewNode> fields = traverseStructure(structure);
+        List<ViewNode> fields = gatherInputFields(structure);
 
         RemoteViews suggestion_view = new RemoteViews(getPackageName(), android.R.layout.simple_list_item_1);
-        suggestion_view.setTextViewText(android.R.id.text1, "my_username");
+        suggestion_view.setTextViewText(android.R.id.text1, "an_example_id (m.facebook.com)");
 
-        if (fields.isEmpty()) return;
+        if (fields.isEmpty())
+        {
+            /**
+             * callback.onFailure will stop this service, and no more fill-request messages will come.
+             * call callback.onSuccess() for no existing formfillings.
+             */
+            callback.onSuccess(null);
+            return;
+        }
 
         FillResponse res = new FillResponse.Builder()
                 .addDataset(new Dataset.Builder(suggestion_view)
-                        .setValue(fields.get(0).getAutofillId(), AutofillValue.forText("facebook.com"))
+                        .setValue(fields.get(0).getAutofillId(), AutofillValue.forText("an_example_id"))
+                        .setValue(fields.get(1).getAutofillId(), AutofillValue.forText("an_example_pw"))
                         .build())
                 .build();
 
         callback.onSuccess(res);
     }
 
-    public List<ViewNode> traverseStructure(AssistStructure structure) {
+    protected static List<ViewNode> gatherInputFields(AssistStructure structure) {
         List<ViewNode> fields = new ArrayList<>();
 
         int nodes = structure.getWindowNodeCount();
@@ -65,11 +74,15 @@ public class BrowserObserver extends AutofillService {
         return fields;
     }
 
-    public void traverseNode(ViewNode viewNode, List<ViewNode> fields) {
+    protected static void traverseNode(ViewNode viewNode, List<ViewNode> fields) {
 
         if (viewNode.getClassName().contains("EditText")) {
-            Log.d(TAG, viewNode.toString());
-            fields.add(viewNode);
+
+            // ignore web browsers url bar.
+            if (!"url_bar".equals(viewNode.getIdEntry())) {
+                Log.v(TAG, "EditText: html_entity_id=" + viewNode.getIdEntry());
+                fields.add(viewNode);
+            }
         }
 
         for (int i = 0; i < viewNode.getChildCount(); i++) {
