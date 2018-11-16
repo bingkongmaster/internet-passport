@@ -4,4 +4,8 @@
     <string name="editText_Password">PASSWORD</string>
     <string name="button_login">LOG IN</string>
     <string name="button_createaccount">CREATE ACCOUNT</string>
+    <string name="accessibility_service_description">
+        This application uses \'accessibility service\' feature in Android, to read
+        and access login forms on the web browser.
+    </string>
 </resources>

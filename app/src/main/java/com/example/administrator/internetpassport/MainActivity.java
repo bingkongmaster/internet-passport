@@ -3,6 +3,8 @@ package com.example.administrator.internetpassport;
 //added password variable on storage
 
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,6 +49,10 @@ public class MainActivity extends AppCompatActivity
 
         storage = new InfoStorage("kaist123","0000","ljw","Male","South Korea", "010-1234-5678", "KAIST");
         nLoginFail = 3;
+        // AutofillManager afm = getSystemService(AutofillManager.class);
+        Intent i = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
+        i.setData(Uri.parse("package:com.example.administrator.internetpassport"));
+        startActivityForResult(i, 1);
     }
 
     public void test_method() throws SQLException {
