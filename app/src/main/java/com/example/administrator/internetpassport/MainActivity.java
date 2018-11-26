@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     private InfoStorage storage;
     private int nLoginFail;
 
+    private SMSReceiver receiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity
         // AutofillManager afm = getSystemService(AutofillManager.class);
         Intent i = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
         i.setData(Uri.parse("package:com.example.administrator.internetpassport"));
+
+        receiver = new SMSReceiver();
+
         startActivityForResult(i, 1);
     }
 
