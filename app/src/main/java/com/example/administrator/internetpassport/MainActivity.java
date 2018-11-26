@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity
         if(inputId.equals(storage.getId()) && inputPassword.equals(storage.getPassword())){
             Intent intent = new Intent(this, ProfileActivity.class);
             intent.putExtra(EXTRA_MESSAGE, inputId);
+            LoginInfo.getInstance().m_logined = true;
             startActivity(intent);
         }
         else{
