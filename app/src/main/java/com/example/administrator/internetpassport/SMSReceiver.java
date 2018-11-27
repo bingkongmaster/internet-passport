@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /*
 Reference : https://bonoogi.postype.com/post/597
  */
@@ -33,6 +36,19 @@ public class SMSReceiver extends BroadcastReceiver {
                 }
 
                 Log.i("sms contents", sms.toString());
+
+                String sms_contents = sms.toString();
+
+                Pattern six_digit = Pattern.compile("\\d{6}");
+
+                Matcher matcher = six_digit.matcher(sms_contents);
+
+                String verification_number = null;
+                if (matcher.find()) {
+                    verification_number = matcher.group(0);
+                }
+
+                Log.i("verification number", verification_number);
             }
         }
     }
