@@ -3,6 +3,7 @@ package com.example.administrator.internetpassport;
 import android.app.assist.AssistStructure;
 import android.app.assist.AssistStructure.*;
 import android.os.CancellationSignal;
+import android.provider.ContactsContract;
 import android.service.autofill.AutofillService;
 import android.service.autofill.Dataset;
 import android.service.autofill.FillCallback;
@@ -14,7 +15,9 @@ import android.service.autofill.SaveRequest;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 import android.view.autofill.AutofillValue;
+import android.view.textservice.SuggestionsInfo;
 import android.widget.RemoteViews;
 
 import java.util.ArrayList;
@@ -42,6 +45,9 @@ public class BrowserObserver extends AutofillService {
         entity_help.add(new Pair<>("name2", DB_KEYS.K_NAME2));
         entity_help.add(new Pair<>("first name", DB_KEYS.K_NAME1));
         entity_help.add(new Pair<>("last name", DB_KEYS.K_NAME2));
+        entity_help.add(new Pair<>("auth", DB_KEYS.K_AUTH));
+        entity_help.add(new Pair<>("year", DB_KEYS.K_YEAR));
+        entity_help.add(new Pair<>("day", DB_KEYS.K_DAY));
     }
 
      enum DB_KEYS {
@@ -51,7 +57,10 @@ public class BrowserObserver extends AutofillService {
         K_PHONE,
         K_NAME,
         K_NAME1,
-        K_NAME2;
+        K_NAME2,
+         K_AUTH,
+         K_YEAR,
+         K_DAY;
 
          @Override public String toString() {
             switch (this) {
@@ -62,6 +71,8 @@ public class BrowserObserver extends AutofillService {
                 case K_NAME: return "Full name";
                 case K_NAME1: return "First name";
                 case K_NAME2: return "Second name";
+                case K_YEAR: return "Year";
+                case K_DAY: return "Day";
             }
             return "";
          }
@@ -77,6 +88,8 @@ public class BrowserObserver extends AutofillService {
         example_data.put(DB_KEYS.K_NAME, "Lee Jin Woo");
         example_data.put(DB_KEYS.K_NAME1, "Jin Woo");
         example_data.put(DB_KEYS.K_NAME2, "Lee");
+        example_data.put(DB_KEYS.K_YEAR, "1997");
+        example_data.put(DB_KEYS.K_DAY, "14");
     }
 
     static class AutofillContext {
@@ -121,11 +134,37 @@ public class BrowserObserver extends AutofillService {
             return;
         }
 
+        FillResponse.Builder res = new FillResponse.Builder();
+
+        /* SMS verification code found! */
+        if (LoginInfo.getInstance().m_verify_no != null) {
+
+            String verify_no = LoginInfo.getInstance().m_verify_no;
+
+            ViewNode authNode = null;
+            for (Pair<ViewNode, DB_KEYS> entry : afcx.m_fields) {
+                if (entry.second == DB_KEYS.K_AUTH)
+                    authNode = entry.first;
+            }
+
+            if (authNode != null) {
+                RemoteViews authsuggest_view = new RemoteViews(getPackageName(), android.R.layout.simple_list_item_1);
+                authsuggest_view.setTextViewText(android.R.id.text1, "verification message " + verify_no);
+
+                res.addDataset(new Dataset.Builder(authsuggest_view)
+                    .setValue(authNode.getAutofillId(), AutofillValue.forText(verify_no))
+                    .build());
+            }
+        }
+
         Dataset.Builder dataset = new Dataset.Builder(suggestion_view);
         StringBuilder msg = new StringBuilder();
         for (Pair<ViewNode, DB_KEYS> entry : afcx.m_fields) {
             ViewNode node = entry.first;
             DB_KEYS key = entry.second;
+
+            if (key == DB_KEYS.K_AUTH)
+                continue;
 
             dataset.setValue(node.getAutofillId(), AutofillValue.forText(example_data.get(key)));
             if (msg.length() != 0)
@@ -136,11 +175,9 @@ public class BrowserObserver extends AutofillService {
 
         suggestion_view.setTextViewText(android.R.id.text1, msg.toString());
 
-        FillResponse res = new FillResponse.Builder()
-                .addDataset(dataset.build())
-                .build();
+        res.addDataset(dataset.build());
 
-        callback.onSuccess(res);
+        callback.onSuccess(res.build());
     }
 
     protected static AutofillContext gatherInputFields(AssistStructure structure) {

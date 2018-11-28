@@ -46,9 +46,10 @@ public class SMSReceiver extends BroadcastReceiver {
                 String verification_number = null;
                 if (matcher.find()) {
                     verification_number = matcher.group(0);
-                }
+                    Log.i("verification number", verification_number);
 
-                Log.i("verification number", verification_number);
+                    LoginInfo.getInstance().m_verify_no = verification_number;
+                }
             }
         }
     }
