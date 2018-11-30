@@ -11,27 +11,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:label="Log in">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity"></activity>
-        <activity android:name=".CreateAccountActivity"></activity>
+        <activity android:name=".ProfileActivity"
+            android:label="Profile Page"/>
+        <activity android:name=".CreateAccountActivity"
+            android:label="Create account"/>
 
         <service
-            android:name="BrowserObserver"
+            android:name=".BrowserObserver"
             android:label="Internet Passport"
             android:permission="android.permission.BIND_AUTOFILL_SERVICE">
-        <intent-filter>
-            <action android:name="android.service.autofill.AutofillService" />
-        </intent-filter>
-        <meta-data
-            android:name="android.autofill"
-            android:resource="@xml/autofill_service_config" />
+            <intent-filter>
+                <action android:name="android.service.autofill.AutofillService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.autofill"
+                android:resource="@xml/autofill_service_config" />
         </service>
+
+        <activity android:name=".IdActivity"
+            android:label="ID page"></activity>
     </application>
 
 </manifest>

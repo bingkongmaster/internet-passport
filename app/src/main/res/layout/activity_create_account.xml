@@ -8,64 +8,66 @@
 
     <EditText
         android:id="@+id/editTextNewId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="50dp"
+        android:drawableLeft="@drawable/ic_action_person"
         android:ems="10"
+        android:hint="New ID"
         android:inputType="textPersonName"
-        android:text="New ID"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextNewPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@drawable/ic_action_lock"
         android:ems="10"
+        android:hint="New Password"
         android:inputType="textPersonName"
-        android:text="New Password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNewId" />
 
     <EditText
         android:id="@+id/editTextConfirmPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="30dp"
+        android:drawableLeft="@drawable/ic_action_lock"
         android:ems="10"
+        android:hint="Confirm Password"
         android:inputType="textPersonName"
-        android:text="Confirm Password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNewPassword" />
 
     <Button
         android:id="@+id/buttonCreateAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="68dp"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="72dp"
+        android:background="@color/colorPrimary"
         android:onClick="createAccount"
-        android:text="Create Account"
+
+        android:text="CREATE ACCOUNT"
+        android:textColor="#ffffff"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPasswordSame" />
 
     <TextView
         android:id="@+id/textViewPasswordSame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginBottom="108dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_marginTop="48dp"
+        android:text="*Enter the same password*"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextConfirmPassword" />
 
 </android.support.constraint.ConstraintLayout>

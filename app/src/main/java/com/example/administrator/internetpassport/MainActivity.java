@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity
     private Button buttonLogin;
     private Button buttonCreateAccount;
 
-    private InfoStorage storage;
+    private static InfoStorage storage = new InfoStorage("kaist123","0000","Edward","Male","South Korea", "010-1234-5678", "KAIST","kaist123@kaist.ac.kr","19970301");
     private int nLoginFail;
 
     @Override
@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         try {
             test_method();
-            Toast.makeText(getApplicationContext(), "Try clause", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Try clause", Toast.LENGTH_LONG).show();
         } catch (SQLException e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Catch clause", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), "Catch clause", Toast.LENGTH_LONG).show();
         }
 
         editTextId = (EditText) findViewById(R.id.editTextId);
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
         buttonCreateAccount = (Button) findViewById(R.id.buttonSignup);
 
-        storage = new InfoStorage("kaist123","0000","ljw","Male","South Korea", "010-1234-5678", "KAIST");
+        //storage = new InfoStorage("kaist123","0000","ljw","Male","South Korea", "010-1234-5678", "KAIST");
         nLoginFail = 3;
         // AutofillManager afm = getSystemService(AutofillManager.class);
         Intent i = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     public void test_method() throws SQLException {
 //        DatabaseHelper helper = new DatabaseHelper(this);
 //        Dao<InfoStorage, Long> infoDao = helper.getDao(InfoStorage.class);
-        InfoStorage storage = new InfoStorage("kaist123","0000","ljw","Male","South Korea", "010-1234-5678", "KAIST");
+        InfoStorage storage = new InfoStorage("kaist123","0000","ChulSoo","Male","South Korea", "010-1234-5678", "KAIST","kaist123@kaist.ac.kr","19970301");
 //        infoDao.create(storage); // create문에서 SQLException 오류 발생
         Log.v("name", storage.getName());
         Log.v("id", storage.getId());
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity
         String inputPassword = editTextPassword.getText().toString();
 
         if(inputId.equals(storage.getId()) && inputPassword.equals(storage.getPassword())){
+            Toast.makeText(MainActivity.this,"Welcome"+inputId,Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, ProfileActivity.class);
             intent.putExtra(EXTRA_MESSAGE, inputId);
             startActivity(intent);
@@ -95,4 +96,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public static InfoStorage getStorage(){
+        return storage;
+    }
 }

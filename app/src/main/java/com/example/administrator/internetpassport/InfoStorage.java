@@ -19,10 +19,14 @@ public class InfoStorage {
     private String phone_number;
     @DatabaseField
     private String address;
+    @DatabaseField
+    private String email;
+    @DatabaseField
+    private String birthday;
 
     public InfoStorage() {}
 
-    public InfoStorage(String id, String password, String name, String sex, String nationality, String phone_number, String address) {
+    public InfoStorage(String id, String password, String name, String sex, String nationality, String phone_number, String address, String email, String birthday) {
         this.id = id;
         this.password = password;
         this.name = name;
@@ -30,6 +34,8 @@ public class InfoStorage {
         this.nationality = nationality;
         this.phone_number = phone_number;
         this.address = address;
+        this.email = email;
+        this.birthday = birthday;
     }
 
     public String getId() {
@@ -60,9 +66,19 @@ public class InfoStorage {
         return sex;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
+
+    public void setPassword(String password) {this.password = password;}
 
     public void setName(String name) {
         this.name = name;
@@ -82,5 +98,13 @@ public class InfoStorage {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }
